@@ -1,11 +1,14 @@
 package com.employmee.employmee.entity;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -35,6 +38,13 @@ public class BusinessProfile {
 	
 	@Column(name = "profile_image")
 	private String profileImage;
+	
+	@OneToMany(
+		mappedBy = "businessProfile",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
+	Set<JobPost> jobPosts;
 	
 	public BusinessProfile() {}
 
@@ -94,5 +104,13 @@ public class BusinessProfile {
 		this.profileImage = profileImage;
 	}
 	
+	public void addJobPost(JobPost jobPost) {
+		jobPosts.add(jobPost);
+		jobPost.setBusinessProfile(this);
+	}
 	
+	public void removeJobPost(JobPost jobPost) {
+		jobPosts.remove(jobPost);
+		jobPost.setBusinessProfile(null);
+	}
 }

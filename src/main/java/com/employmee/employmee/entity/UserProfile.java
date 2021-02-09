@@ -1,5 +1,7 @@
 package com.employmee.employmee.entity;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -44,6 +48,14 @@ public class UserProfile {
 	
 	@Column(name = "profile_image_name")
 	private String profileImageName;
+	
+	@ManyToMany
+    @JoinTable(
+    		name = "user_bookmarks", 
+            joinColumns = { @JoinColumn(name = "user_profile_id") }, 
+            inverseJoinColumns = { @JoinColumn(name = "job_post_id") }
+    )
+	Set<JobPost> bookmarkedJobPosts;
 	
 	public UserProfile() {}
 
@@ -117,6 +129,14 @@ public class UserProfile {
 
 	public void setProfileImageName(String profileImageName) {
 		this.profileImageName = profileImageName;
+	}
+
+	public Set<JobPost> getBookmarkedJobPosts() {
+		return bookmarkedJobPosts;
+	}
+
+	public void setBookmarkedJobPosts(Set<JobPost> jobPosts) {
+		this.bookmarkedJobPosts = jobPosts;
 	}
 
 }
