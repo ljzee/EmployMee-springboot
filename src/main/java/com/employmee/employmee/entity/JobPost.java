@@ -1,6 +1,7 @@
 package com.employmee.employmee.entity;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -63,6 +67,12 @@ public class JobPost {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private BusinessProfile businessProfile;
+	
+	@ManyToMany()
+	@JoinTable(name = "job_addresses",
+	           joinColumns=@JoinColumn(name="job_post_id"),
+	           inverseJoinColumns=@JoinColumn(name="address_id"))
+	Set<Address> addresses;
 	
 	public JobPost() {}
 
@@ -184,6 +194,14 @@ public class JobPost {
 
 	public void setBusinessProfile(BusinessProfile businessProfile) {
 		this.businessProfile = businessProfile;
+	}
+
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
 	}
 
 	@Override

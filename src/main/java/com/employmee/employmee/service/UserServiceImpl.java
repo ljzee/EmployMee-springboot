@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.employmee.employmee.entity.User;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserNotFoundException;
-import com.employmee.employmee.exception.UserProfileAlreadyCreatedException;
+import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.repository.UserRepository;
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepostiory.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 		
 		if(userProfileRepository.existsById(userId)) {
-			throw new UserProfileAlreadyCreatedException(userId);
+			throw new ProfileAlreadyCreatedException(userId);
 		}
 		
 		UserProfile newUserProfile = new UserProfile();

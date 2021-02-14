@@ -46,8 +46,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     	return buildResponseEntity(apiErrorResponse);
     }
     
-    @ExceptionHandler(UserProfileAlreadyCreatedException.class)
-    protected ResponseEntity<Object> handleUserProfileAlreadyCreatedException(UserProfileAlreadyCreatedException ex) {
+    @ExceptionHandler(ProfileAlreadyCreatedException.class)
+    protected ResponseEntity<Object> handleUserProfileAlreadyCreatedException(ProfileAlreadyCreatedException ex) {
     	ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST);
     	apiErrorResponse.setMessage("User profile has already been created.");
     	return buildResponseEntity(apiErrorResponse);

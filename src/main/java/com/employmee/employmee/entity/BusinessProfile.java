@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,6 +47,15 @@ public class BusinessProfile {
 		orphanRemoval = true
 	)
 	Set<JobPost> jobPosts;
+	
+	@ManyToMany(cascade = {
+	        CascadeType.PERSIST,
+	        CascadeType.MERGE
+	})
+	@JoinTable(name = "business_addresses",
+	           joinColumns=@JoinColumn(name="business_profile_id"),
+	           inverseJoinColumns=@JoinColumn(name="address_id"))
+	Set<Address> addresses;
 	
 	public BusinessProfile() {}
 
@@ -104,6 +115,14 @@ public class BusinessProfile {
 		this.profileImage = profileImage;
 	}
 	
+	public Set<JobPost> getJobPosts() {
+		return jobPosts;
+	}
+
+	public void setJobPosts(Set<JobPost> jobPosts) {
+		this.jobPosts = jobPosts;
+	}
+	
 	public void addJobPost(JobPost jobPost) {
 		jobPosts.add(jobPost);
 		jobPost.setBusinessProfile(this);
@@ -113,4 +132,17 @@ public class BusinessProfile {
 		jobPosts.remove(jobPost);
 		jobPost.setBusinessProfile(null);
 	}
+
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
+	}
+	
+	public void addAddress(Address address) {
+		addresses.add(address);
+	}
+	
 }
