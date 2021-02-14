@@ -7,7 +7,7 @@ import java.util.Set;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
 
-public class DashboardResponse {
+public class UserDashboardResponse {
 	
 	private List<Bookmark> bookmarks;
 	

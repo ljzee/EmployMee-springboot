@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
-import com.employmee.employmee.payload.response.DashboardResponse;
+import com.employmee.employmee.payload.response.UserDashboardResponse;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.security.MyUserDetails;
 import com.employmee.employmee.service.UserService;
@@ -49,9 +49,9 @@ public class UserController {
 		Optional<UserProfile> result = userProfileRepository.findById(userDetails.getId());
 		UserProfile userProfile = result.get();
 		
-		DashboardResponse dashboardResponse = new DashboardResponse();
-		dashboardResponse.setBookmarks(userProfile.getBookmarkedJobPosts());
+		UserDashboardResponse userDashboardResponse = new UserDashboardResponse();
+		userDashboardResponse.setBookmarks(userProfile.getBookmarkedJobPosts());
 		
-		return ResponseEntity.ok(dashboardResponse);
+		return ResponseEntity.ok(userDashboardResponse);
 	}
 }
