@@ -10,14 +10,14 @@ import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
 
 public class BusinessDashboardResponse {
-	private List<DashboardJobPost> jobs;
+	private List<BusinessJobPost> jobs;
 
-	public List<DashboardJobPost> getJobs() {
+	public List<BusinessJobPost> getJobs() {
 		return jobs;
 	}
 
-	public void setJobs(Set<JobPost> businessJobPosts) {
-		List<DashboardJobPost> jobs = new ArrayList<>();
+	public void setJobs(List<JobPost> businessJobPosts) {
+		List<BusinessJobPost> jobs = new ArrayList<>();
 		for(JobPost jobPost : businessJobPosts) {
 			BusinessProfile businessProfile = jobPost.getBusinessProfile();
 			
@@ -33,8 +33,8 @@ public class BusinessDashboardResponse {
 				jobState = jobAddress.getState();
 			}
 			
-			DashboardJobPost dashboardJobPost = new DashboardJobPost(jobPostId, jobTitle, jobCity, jobState);
-			jobs.add(dashboardJobPost);
+			BusinessJobPost businessJobPost = new BusinessJobPost(jobPostId, jobTitle, jobCity, jobState);
+			jobs.add(businessJobPost);
 		}
 		
 		this.jobs = jobs;

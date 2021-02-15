@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +20,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "job_posts")
 public class JobPost {
+	
+	public enum STATUS {
+		OPEN,
+		CLOSED,
+		DRAFT
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -56,8 +65,9 @@ public class JobPost {
 	@Column(name = "date_created")
 	private LocalDate dateCreated;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	private String status;
+	private STATUS status;
 	
 	@Column(name = "date_published")
 	private LocalDate datePublished;
@@ -172,11 +182,11 @@ public class JobPost {
 		this.dateCreated = dateCreated;
 	}
 
-	public String getStatus() {
+	public STATUS getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(STATUS status) {
 		this.status = status;
 	}
 
