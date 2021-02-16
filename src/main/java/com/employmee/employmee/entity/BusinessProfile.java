@@ -1,5 +1,6 @@
 package com.employmee.employmee.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,7 +47,7 @@ public class BusinessProfile {
 		cascade = CascadeType.ALL,
 		orphanRemoval = true
 	)
-	Set<JobPost> jobPosts;
+	Set<JobPost> jobPosts = new HashSet<>();
 	
 	@ManyToMany(cascade = {
 	        CascadeType.PERSIST,
@@ -55,7 +56,7 @@ public class BusinessProfile {
 	@JoinTable(name = "business_addresses",
 	           joinColumns=@JoinColumn(name="business_profile_id"),
 	           inverseJoinColumns=@JoinColumn(name="address_id"))
-	Set<Address> addresses;
+	Set<Address> addresses = new HashSet<>();
 	
 	public BusinessProfile() {}
 

@@ -2,6 +2,7 @@ package com.employmee.employmee.payload.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -11,6 +12,7 @@ import com.employmee.employmee.entity.User;
 public class RegisterRequest {
 	
 	@Size(min = 8, message = "Username must have a minimum of 8 characters.")
+	@NotNull(message = "Username must not be null.")
 	private String username;
 	
 	@NotBlank(message = "Email must not be blank.")
@@ -18,6 +20,7 @@ public class RegisterRequest {
 	private String email;
 	
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "Minimum 8 characters, at least one uppercase letter, one lowercase letter and one number.")
+	@NotNull(message = "Password must not be null.")
 	private String password;
 	
 	@ValueOfEnum(enumClass = User.ROLE.class, message="User type must be one of USER or BUSINESS.")

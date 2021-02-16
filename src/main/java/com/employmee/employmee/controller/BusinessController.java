@@ -1,8 +1,11 @@
 package com.employmee.employmee.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -18,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
-import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
+import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
-import com.employmee.employmee.payload.response.UserDashboardResponse;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.security.MyUserDetails;
 import com.employmee.employmee.service.BusinessService;
+import com.employmee.employmee.service.JobPostService;
 
 @RestController
 @RequestMapping("/business")
@@ -36,10 +39,14 @@ public class BusinessController {
 	BusinessService businessService;
 	
 	@Autowired
+	JobPostService jobPostService;
+	
+	@Autowired
 	BusinessProfileRepository businessProfileRepository;
 	
 	@Autowired
 	JobPostRepository jobPostRepository;
+
 	
 	@PostMapping("/profile")
 	@PreAuthorize("hasRole('BUSINESS')")
@@ -78,4 +85,16 @@ public class BusinessController {
 		return ResponseEntity.ok(businessJobPosts);
 	}
 	
+	@PostMapping("/jobpost")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> createJobPost(@Valid @RequestBody CreateJobPostRequest createJobPostRequest) {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
+		BusinessProfile businessProfile = result.get();
+		
+		jobPostService.createJobPost(businessProfile, createJobPostRequest);
+		
+		return ResponseEntity.ok().build();
+	}
 }

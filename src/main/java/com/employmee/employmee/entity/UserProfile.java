@@ -1,5 +1,6 @@
 package com.employmee.employmee.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -49,13 +50,16 @@ public class UserProfile {
 	@Column(name = "profile_image_name")
 	private String profileImageName;
 	
-	@ManyToMany
+	@ManyToMany(cascade = {
+	        CascadeType.PERSIST,
+	        CascadeType.MERGE
+	})
     @JoinTable(
     		name = "user_bookmarks", 
             joinColumns = { @JoinColumn(name = "user_profile_id") }, 
             inverseJoinColumns = { @JoinColumn(name = "job_post_id") }
     )
-	Set<JobPost> bookmarkedJobPosts;
+	Set<JobPost> bookmarkedJobPosts = new HashSet<>();
 	
 	public UserProfile() {}
 

@@ -49,7 +49,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProfileAlreadyCreatedException.class)
     protected ResponseEntity<Object> handleUserProfileAlreadyCreatedException(ProfileAlreadyCreatedException ex) {
     	ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST);
-    	apiErrorResponse.setMessage("User profile has already been created.");
+    	apiErrorResponse.setMessage("A profile has already been created.");
     	return buildResponseEntity(apiErrorResponse);
     }
     
@@ -57,6 +57,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
     	ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
     	apiErrorResponse.setMessage("Internal server error.");
+    	return buildResponseEntity(apiErrorResponse);
+    }
+    
+    @ExceptionHandler(UserFriendlyException.class)
+    protected ResponseEntity<Object> handleUserFriendlyException(UserFriendlyException ex) {
+    	ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST);
+    	apiErrorResponse.setMessage(ex.getUserFriendlyMessage());
     	return buildResponseEntity(apiErrorResponse);
     }
     

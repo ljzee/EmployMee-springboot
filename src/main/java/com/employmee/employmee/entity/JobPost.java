@@ -1,6 +1,7 @@
 package com.employmee.employmee.entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "job_posts")
 public class JobPost {
@@ -25,6 +28,13 @@ public class JobPost {
 		OPEN,
 		CLOSED,
 		DRAFT
+	}
+	
+	public enum TYPE {
+		FULLTIME,
+		PARTIME,
+		TEMPORARY,
+		INTERNSHIP
 	}
 	
 	@Id
@@ -38,8 +48,9 @@ public class JobPost {
 	@Column(name = "duration")
 	private String duration;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "position_type")
-	private String positionType;
+	private TYPE positionType;
 	
 	@Column(name = "openings")
 	private int openings;
@@ -72,8 +83,9 @@ public class JobPost {
 	@Column(name = "date_published")
 	private LocalDate datePublished;
 	
-	@Column(name="uuid", unique=true, nullable=false, updatable=false, length = 36)
-	private String uuid = java.util.UUID.randomUUID().toString();
+	@Column(name="uuid", unique=true, nullable=false, updatable=false)
+	@Type(type="pg-uuid")
+	private java.util.UUID uuid = java.util.UUID.randomUUID();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private BusinessProfile businessProfile;
@@ -82,7 +94,7 @@ public class JobPost {
 	@JoinTable(name = "job_addresses",
 	           joinColumns=@JoinColumn(name="job_post_id"),
 	           inverseJoinColumns=@JoinColumn(name="address_id"))
-	Set<Address> addresses;
+	Set<Address> addresses = new HashSet<>();
 	
 	public JobPost() {}
 
@@ -110,11 +122,11 @@ public class JobPost {
 		this.duration = duration;
 	}
 
-	public String getPositionType() {
+	public TYPE getPositionType() {
 		return positionType;
 	}
 
-	public void setPositionType(String positionType) {
+	public void setPositionType(TYPE positionType) {
 		this.positionType = positionType;
 	}
 
