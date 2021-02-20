@@ -14,13 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
+import com.employmee.employmee.exception.EntityNotFoundException;
+import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
@@ -46,7 +50,6 @@ public class BusinessController {
 	
 	@Autowired
 	JobPostRepository jobPostRepository;
-
 	
 	@PostMapping("/profile")
 	@PreAuthorize("hasRole('BUSINESS')")
@@ -97,4 +100,19 @@ public class BusinessController {
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("/address")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> getBusinessAddresses() {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
+		BusinessProfile businessProfile = result.get();
+		
+		ArrayList<Address> addresses = new ArrayList<>();
+		addresses.addAll(businessProfile.getAddresses());
+		
+		return ResponseEntity.ok(addresses);
+	}
+	
 }

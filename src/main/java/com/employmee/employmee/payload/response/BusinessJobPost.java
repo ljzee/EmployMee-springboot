@@ -33,7 +33,7 @@ public class BusinessJobPost {
 	public BusinessJobPost(JobPost jobPost) {
 		this.id = jobPost.getId();
 		this.title = jobPost.getTitle();
-		this.deadline = jobPost.getDeadline().toString();
+		this.deadline = jobPost.getDeadline() != null ? jobPost.getDeadline().toString() : null;
 		this.applicantCount = 0;
 		this.status= jobPost.getStatus().name();
 		

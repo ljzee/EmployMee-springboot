@@ -22,7 +22,6 @@ public class CreateJobPostRequest {
 	@ValueOfEnum(enumClass = JobPost.TYPE.class, message="Position type must be one of FULLTIME, PARTTIME, TEMPORARY, or INTERNSHIP.")
 	private String positionType;
 	
-	@NotNull(message = "Address id must not be null.")
 	private int addressId;
 	
 	@PositiveOrZero(message = "Openings must be a number greater or equal to 0.")

@@ -32,7 +32,7 @@ public class JobPost {
 	
 	public enum TYPE {
 		FULLTIME,
-		PARTIME,
+		PARTTIME,
 		TEMPORARY,
 		INTERNSHIP
 	}
