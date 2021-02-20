@@ -11,8 +11,10 @@ import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
+import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.repository.AddressRepository;
 import com.employmee.employmee.repository.BusinessProfileRepository;
+import com.employmee.employmee.repository.JobPostRepository;
 
 @Service
 public class JobPostServiceImpl implements JobPostService {
@@ -21,6 +23,9 @@ public class JobPostServiceImpl implements JobPostService {
 	
 	@Autowired
 	BusinessProfileRepository businessProfileRepository;
+	
+	@Autowired
+	JobPostRepository jobPostRepository;
 	
 	@Override
 	public void createJobPost(BusinessProfile businessProfile, CreateJobPostRequest createJobPostRequest) {
@@ -46,6 +51,12 @@ public class JobPostServiceImpl implements JobPostService {
 		
 		businessProfileRepository.save(businessProfile);
 		
+	}
+
+	@Override
+	public void updateJobPostDeadline(JobPost jobPost, UpdateJobPostDeadlineRequest updateJobPostDeadlineRequest) {
+		jobPost.setDeadline(updateJobPostDeadlineRequest.getDeadline());
+		jobPostRepository.save(jobPost);
 	}
 
 }

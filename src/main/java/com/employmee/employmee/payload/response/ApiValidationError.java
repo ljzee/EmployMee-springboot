@@ -7,13 +7,11 @@ public class ApiValidationError extends ApiSubError {
 	private String message;
 
 	public ApiValidationError(String field, String message) {
-		// TODO Auto-generated constructor stub
 		this.field = field;
 		this.message = message;
 	}
 
 	public ApiValidationError(String message) {
-		// TODO Auto-generated constructor stub
 		this.field = null;
 		this.message = message;
 	}

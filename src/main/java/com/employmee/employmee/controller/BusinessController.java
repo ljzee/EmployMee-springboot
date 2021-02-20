@@ -10,12 +10,14 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,7 @@ import com.employmee.employmee.exception.EntityNotFoundException;
 import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
+import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
 import com.employmee.employmee.repository.BusinessProfileRepository;
@@ -98,6 +101,25 @@ public class BusinessController {
 		
 		jobPostService.createJobPost(businessProfile, createJobPostRequest);
 		
+		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/jobpost/{jobPostId}/deadline")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> updateJobPostDeadline(@PathVariable("jobPostId") int jobPostId, @Valid @RequestBody UpdateJobPostDeadlineRequest updateJobPostDeadlineRequest) {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
+		BusinessProfile businessProfile = result.get();
+		
+		Optional<JobPost> jobPostOptional = jobPostRepository.findById(jobPostId);
+		
+		if(jobPostOptional.isEmpty() || 
+		   jobPostOptional.get().getBusinessProfile().getId() != businessProfile.getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		jobPostService.updateJobPostDeadline(jobPostOptional.get(), updateJobPostDeadlineRequest);
 		return ResponseEntity.ok().build();
 	}
 	
