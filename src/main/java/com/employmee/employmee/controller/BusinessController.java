@@ -78,7 +78,7 @@ public class BusinessController {
 	
 	@GetMapping("/jobpost")
 	@PreAuthorize("hasRole('BUSINESS')")
-	public ResponseEntity<?> getBusinessJobPosts() {
+	public ResponseEntity<?> getJobPosts() {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
@@ -90,6 +90,26 @@ public class BusinessController {
 		}
 		
 		return ResponseEntity.ok(businessJobPosts);
+	}
+	
+	@GetMapping("/jobpost/{jobPostId}")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> getJobPost(@PathVariable int jobPostId) {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
+		BusinessProfile businessProfile = result.get();
+		
+		Optional<JobPost> jobPostOptional = jobPostRepository.findById(jobPostId);
+		
+		// if job post does not exist or does not belong to the business, send response with code 403
+		if(jobPostOptional.isEmpty() || 
+		   jobPostOptional.get().getBusinessProfile().getId() != businessProfile.getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		BusinessJobPost businessJobPost = new BusinessJobPost(jobPostOptional.get());
+		return ResponseEntity.ok(businessJobPost);
 	}
 	
 	@PostMapping("/jobpost")
@@ -107,7 +127,7 @@ public class BusinessController {
 	
 	@PutMapping("/jobpost/{jobPostId}/deadline")
 	@PreAuthorize("hasRole('BUSINESS')")
-	public ResponseEntity<?> updateJobPostDeadline(@PathVariable("jobPostId") int jobPostId, @Valid @RequestBody UpdateJobPostDeadlineRequest updateJobPostDeadlineRequest) {
+	public ResponseEntity<?> updateJobPostDeadline(@PathVariable int jobPostId, @Valid @RequestBody UpdateJobPostDeadlineRequest updateJobPostDeadlineRequest) {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
@@ -127,7 +147,7 @@ public class BusinessController {
 	
 	@DeleteMapping("/jobpost/{jobPostId}")
 	@PreAuthorize("hasRole('BUSINESS')")
-	public ResponseEntity<?> deleteJobPost(@PathVariable("jobPostId") int jobPostId) {
+	public ResponseEntity<?> deleteJobPost(@PathVariable int jobPostId) {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());

@@ -47,6 +47,10 @@ public class JobPostServiceImpl implements JobPostService {
 		newJobPost.setDeadline(createJobPostRequest.getDeadline());
 		newJobPost.setDateCreated(LocalDate.now());
 		
+		if(createJobPostRequest.getStatus() == JobPost.STATUS.OPEN.name()) {
+			newJobPost.setDatePublished(LocalDate.now());
+		}
+		
 		businessProfile.addJobPost(newJobPost);
 		
 		businessProfileRepository.save(businessProfile);

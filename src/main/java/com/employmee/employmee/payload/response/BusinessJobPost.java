@@ -1,97 +1,30 @@
 package com.employmee.employmee.payload.response;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.employmee.employmee.entity.Address;
-import com.employmee.employmee.entity.JobPost;
 
-public class BusinessJobPost {
-	
-	private int id;
-	
-	private String title;
-	
-	private String city;
-	
-	private String state;
-
-	private String deadline;
-	
-	private Integer applicantCount;
+public class BusinessJobPost extends JobPost {
 	
 	private String status;
 	
-	public BusinessJobPost(int id, String title, String city, String state) {
-		this.id = id;
-		this.title = title;
-		this.city = city;
-		this.state = state;
-	}
+	private String dateCreated;
 
-	public BusinessJobPost(JobPost jobPost) {
-		this.id = jobPost.getId();
-		this.title = jobPost.getTitle();
-		this.deadline = jobPost.getDeadline() != null ? jobPost.getDeadline().toString() : null;
-		this.applicantCount = 0;
-		this.status= jobPost.getStatus().name();
+	private int applicationCount;
+	
+	private List<Address> businessAddresses;
+	
+	public BusinessJobPost(com.employmee.employmee.entity.JobPost jobPost) {
+		super(jobPost);
 		
-		Set<Address> addresses = jobPost.getAddresses();
-		Iterator<Address> addressesIterator = addresses.iterator();
-		if(addressesIterator.hasNext()); {
-			Address address = addressesIterator.next();
-			this.city = address.getCity();
-			this.state = address.getCountry();
-		}
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getDeadline() {
-		return deadline;
-	}
-
-	public void setDeadline(String deadline) {
-		this.deadline = deadline;
-	}
-
-	public Integer getApplicantCount() {
-		return applicantCount;
-	}
-
-	public void setApplicantCount(Integer applicantCount) {
-		this.applicantCount = applicantCount;
+		this.status= jobPost.getStatus().name();
+		this.dateCreated = jobPost.getDateCreated().toString();
+		this.applicationCount = 0;
+		this.businessAddresses = new ArrayList<Address>(jobPost.getBusinessProfile().getAddresses());
 	}
 
 	public String getStatus() {
@@ -102,5 +35,29 @@ public class BusinessJobPost {
 		this.status = status;
 	}
 
+	public String getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(String dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public int getApplicationCount() {
+		return applicationCount;
+	}
+
+	public void setApplicationCount(int applicationCount) {
+		this.applicationCount = applicationCount;
+	}
+
+	public List<Address> getBusinessAddresses() {
+		return businessAddresses;
+	}
+
+	public void setBusinessAddresses(List<Address> businessAddresses) {
+		this.businessAddresses = businessAddresses;
+	}
+	
 	
 }
