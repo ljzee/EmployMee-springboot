@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -114,12 +115,38 @@ public class BusinessController {
 		
 		Optional<JobPost> jobPostOptional = jobPostRepository.findById(jobPostId);
 		
+		// if job post does not exist or does not belong to the business, send response with code 403
 		if(jobPostOptional.isEmpty() || 
 		   jobPostOptional.get().getBusinessProfile().getId() != businessProfile.getId()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 		
 		jobPostService.updateJobPostDeadline(jobPostOptional.get(), updateJobPostDeadlineRequest);
+		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/jobpost/{jobPostId}")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> deleteJobPost(@PathVariable("jobPostId") int jobPostId) {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
+		BusinessProfile businessProfile = result.get();
+		
+		Optional<JobPost> jobPostOptional = jobPostRepository.findById(jobPostId);
+		
+		// if job post does not exist or does not belong to business, send response with code 403
+		if(jobPostOptional.isEmpty() || 
+		   jobPostOptional.get().getBusinessProfile().getId() != businessProfile.getId()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		// if deletion is not allowed for job post, send response with code 405
+		if(!jobPostOptional.get().canDeleteJobPost()) {
+			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+		}
+		
+		jobPostRepository.delete(jobPostOptional.get());
 		return ResponseEntity.ok().build();
 	}
 	

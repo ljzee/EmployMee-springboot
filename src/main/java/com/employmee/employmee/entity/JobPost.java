@@ -226,6 +226,10 @@ public class JobPost {
 		this.addresses = addresses;
 	}
 
+	public boolean canDeleteJobPost() {
+		return this.status == STATUS.DRAFT;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
