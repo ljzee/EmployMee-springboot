@@ -34,7 +34,7 @@ public class CreateJobPostRequest {
 	private boolean otherRequired;
 	
 	@ValueOfEnum(enumClass = JobPost.STATUS.class, message="Status must be one of OPEN, CLOSED, or DRAFT.")
-	private String status;
+	private String status = JobPost.STATUS.DRAFT.name();
 	
 	private String description;
 	
