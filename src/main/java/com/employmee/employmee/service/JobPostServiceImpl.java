@@ -1,7 +1,11 @@
 package com.employmee.employmee.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -11,10 +15,12 @@ import org.springframework.stereotype.Service;
 import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
+import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
+import com.employmee.employmee.payload.response.UserJobPost;
 import com.employmee.employmee.repository.AddressRepository;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.JobPostRepository;
@@ -90,6 +96,30 @@ public class JobPostServiceImpl implements JobPostService {
 	public void updateJobPostStatus(JobPost jobPost, @Valid UpdateJobPostStatusRequest updateJobPostStatusRequest) {
 		jobPost.setStatus(JobPost.STATUS.valueOf(updateJobPostStatusRequest.getStatus()));
 		jobPostRepository.save(jobPost);
+	}
+
+	@Override
+	public List<UserJobPost> searchJobPosts(UserProfile userProfile, String searchField, String country, String state, String city) {
+		Set<JobPost> jobPosts = jobPostRepository.searchJobPost(searchField, country, state, city);
+		
+		// process searched job posts to determine if user has applied to or bookmarked any job searched job posts
+		Set<JobPost> bookmarkedJobPosts = userProfile.getBookmarkedJobPosts();
+		List<UserJobPost> userJobPosts = new ArrayList<>();
+		Iterator<JobPost> jobPostIterator = jobPosts.iterator();
+		while(jobPostIterator.hasNext()) {
+			JobPost jobPost = jobPostIterator.next();
+			UserJobPost userJobPost = new UserJobPost(jobPost);
+			
+			// check if user has applied to job post
+			
+			// check if user has bookmarked job post
+			if(bookmarkedJobPosts.contains(jobPost)) {
+				userJobPost.setBookmarked(true);
+			}
+			userJobPosts.add(userJobPost);
+		}
+		
+		return userJobPosts;
 	}
 
 }
