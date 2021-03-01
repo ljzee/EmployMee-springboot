@@ -1,10 +1,12 @@
 package com.employmee.employmee.service;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.User;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserNotFoundException;
@@ -40,6 +42,18 @@ public class UserServiceImpl implements UserService {
 		newUserProfile.setBio(createUserProfileRequest.getBio());
 		
 		userProfileRepository.save(newUserProfile);
+	}
+
+	@Override
+	public void toggleBookmarkJobPost(UserProfile userProfile, JobPost jobPost) {
+		Set<JobPost> bookmarkedJobPosts = userProfile.getBookmarkedJobPosts();
+		if(bookmarkedJobPosts.contains(jobPost)) {
+			bookmarkedJobPosts.remove(jobPost);
+		} else {
+			bookmarkedJobPosts.add(jobPost);
+		}
+		
+		userProfileRepository.save(userProfile);
 	}
 
 }

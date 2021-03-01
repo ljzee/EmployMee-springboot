@@ -1,6 +1,8 @@
 package com.employmee.employmee.repository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,9 +23,12 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
 	     + "WHERE address.country LIKE %:country% \n"
 	     + "	AND address.state LIKE %:state% \n"
 	     + "	AND address.city  LIKE %:city% \n"
-	     + "	AND (jobPost.title LIKE %:searchField% OR businessProfile.companyName LIKE %:searchField%)")
+	     + "	AND (jobPost.title LIKE %:searchField% OR businessProfile.companyName LIKE %:searchField%)"
+	     + "	AND jobPost.status = 'OPEN'")
 	Set<JobPost> searchJobPost(@Param("searchField") String searchField, 
 			                          @Param("country") String country,
 			                          @Param("state") String state,
 			                          @Param("city") String city);
+	
+	Optional<JobPost> findFirstByIdAndStatusIn(int id, List<JobPost.STATUS> statuses);
 }
