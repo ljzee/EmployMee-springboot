@@ -22,4 +22,6 @@ public interface JobPostService {
 	public void updateJobPostStatus(JobPost jobPost, @Valid UpdateJobPostStatusRequest updateJobPostStatusRequest);
 	
 	public List<UserJobPost> searchJobPosts(UserProfile userProfile, String searchField, String country, String state, String city);
+	
+	public UserJobPost getJobPostById(UserProfile userProfile, int jobPostId);
 }

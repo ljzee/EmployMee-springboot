@@ -2,6 +2,7 @@ package com.employmee.employmee.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -103,23 +104,35 @@ public class JobPostServiceImpl implements JobPostService {
 		Set<JobPost> jobPosts = jobPostRepository.searchJobPost(searchField, country, state, city);
 		
 		// process searched job posts to determine if user has applied to or bookmarked any job searched job posts
-		Set<JobPost> bookmarkedJobPosts = userProfile.getBookmarkedJobPosts();
 		List<UserJobPost> userJobPosts = new ArrayList<>();
 		Iterator<JobPost> jobPostIterator = jobPosts.iterator();
 		while(jobPostIterator.hasNext()) {
 			JobPost jobPost = jobPostIterator.next();
 			UserJobPost userJobPost = new UserJobPost(jobPost);
 			
-			// check if user has applied to job post
+			userJobPost.setApplied(userProfile.hasAppliedToJobPost(jobPost));
+			userJobPost.setBookmarked(userProfile.hasBookmarkedJobPost(jobPost));
 			
-			// check if user has bookmarked job post
-			if(bookmarkedJobPosts.contains(jobPost)) {
-				userJobPost.setBookmarked(true);
-			}
 			userJobPosts.add(userJobPost);
 		}
 		
 		return userJobPosts;
+	}
+
+	@Override
+	public UserJobPost getJobPostById(UserProfile userProfile, int jobPostId) {
+		Optional<JobPost> jobPostOptional = this.jobPostRepository.findFirstByIdAndStatusIn(jobPostId, Arrays.asList(JobPost.STATUS.OPEN, JobPost.STATUS.CLOSED));
+		if(jobPostOptional.isEmpty()) {
+			return null;
+		}
+		
+		JobPost jobPost = jobPostOptional.get();
+		UserJobPost userJobPost = new UserJobPost(jobPost);
+		
+		userJobPost.setApplied(userProfile.hasAppliedToJobPost(jobPost));
+		userJobPost.setBookmarked(userProfile.hasBookmarkedJobPost(jobPost));
+		
+		return userJobPost;
 	}
 
 }

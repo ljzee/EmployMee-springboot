@@ -143,4 +143,12 @@ public class UserProfile {
 		this.bookmarkedJobPosts = jobPosts;
 	}
 
+	public boolean hasBookmarkedJobPost(JobPost jobPost) {
+		return this.bookmarkedJobPosts.contains(jobPost);
+	}
+	
+	public boolean hasAppliedToJobPost(JobPost jobPost) {
+		return false;
+	}
+	
 }

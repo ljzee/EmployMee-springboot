@@ -32,7 +32,11 @@ public class JobPost {
 	
 	private String datePublished;
 	
+	private String status;
+	
 	private List<Address> jobAddresses;
+	
+	private int companyId;
 	
 	private String companyName;
 	
@@ -53,6 +57,8 @@ public class JobPost {
 		this.resumeRequired = jobPost.isResumeRequired();
 		this.otherRequired = jobPost.isOtherRequired();
 		this.datePublished = jobPost.getDatePublished() != null ? jobPost.getDatePublished().toString() : null;
+		this.status = jobPost.getStatus().name();
+		this.companyId = jobPost.getBusinessProfile().getId();
 		this.companyName = jobPost.getBusinessProfile().getCompanyName();
 		this.companyPhoneNumber = jobPost.getBusinessProfile().getPhoneNumber();
 		this.companyWebsite = jobPost.getBusinessProfile().getWebsite();
@@ -186,6 +192,23 @@ public class JobPost {
 	public void setJobAddresses(List<Address> jobAddresses) {
 		this.jobAddresses = jobAddresses;
 	}
+
+	public int getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 	
 	
 }
