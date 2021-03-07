@@ -1,5 +1,12 @@
 package com.employmee.employmee.exception;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +38,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiErrorResponse);
     }
     
+	@ExceptionHandler(ConstraintViolationException.class)
+	protected ResponseEntity<Object> handleConstraintViolation(
+	ConstraintViolationException ex) {
+		ApiErrorResponse apiErrorResponse = new ApiErrorResponse(HttpStatus.BAD_REQUEST);
+		apiErrorResponse.setMessage("Validation error");
+		Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
+		Iterator<ConstraintViolation<?>> iterator = violations.iterator();
+		while(iterator.hasNext()) {
+			ConstraintViolation<?> violation = iterator.next();
+			apiErrorResponse.addValidationError(((PathImpl)violation.getPropertyPath()).getLeafNode().getName(), violation.getMessage());
+		}
+		return buildResponseEntity(apiErrorResponse);
+	}
+	
     @ExceptionHandler(BadCredentialsException.class)
     protected ResponseEntity<Object> handleBadCredentialsException(
             BadCredentialsException ex) {

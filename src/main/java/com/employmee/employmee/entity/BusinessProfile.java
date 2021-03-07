@@ -50,12 +50,12 @@ public class BusinessProfile {
 	Set<JobPost> jobPosts = new HashSet<>();
 	
 	@ManyToMany(cascade = {
-	        CascadeType.PERSIST,
-	        CascadeType.MERGE
+        CascadeType.PERSIST,
+        CascadeType.MERGE
 	})
 	@JoinTable(name = "business_addresses",
-	           joinColumns=@JoinColumn(name="business_profile_id"),
-	           inverseJoinColumns=@JoinColumn(name="address_id"))
+       joinColumns=@JoinColumn(name="business_profile_id"),
+       inverseJoinColumns=@JoinColumn(name="address_id"))
 	Set<Address> addresses = new HashSet<>();
 	
 	public BusinessProfile() {}

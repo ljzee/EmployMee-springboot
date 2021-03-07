@@ -50,7 +50,7 @@ public class ApiErrorResponse {
         subErrors.add(subError);
     }
 	
-    private void addValidationError(String field, String message) {
+    public void addValidationError(String field, String message) {
         this.addSubError(new ApiValidationError(field, message));
     }
 

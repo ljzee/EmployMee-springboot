@@ -92,8 +92,8 @@ public class JobPost {
 	
 	@ManyToMany()
 	@JoinTable(name = "job_addresses",
-	           joinColumns=@JoinColumn(name="job_post_id"),
-	           inverseJoinColumns=@JoinColumn(name="address_id"))
+           joinColumns=@JoinColumn(name="job_post_id"),
+           inverseJoinColumns=@JoinColumn(name="address_id"))
 	Set<Address> addresses = new HashSet<>();
 	
 	public JobPost() {}

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -60,6 +61,13 @@ public class UserProfile {
             inverseJoinColumns = { @JoinColumn(name = "job_post_id") }
     )
 	Set<JobPost> bookmarkedJobPosts = new HashSet<>();
+	
+	@OneToMany(
+		mappedBy = "userProfile",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
+	Set<Document> documents = new HashSet<>();
 	
 	public UserProfile() {}
 
@@ -151,4 +159,13 @@ public class UserProfile {
 		return false;
 	}
 	
+	public void addDocument(Document document) {
+		documents.add(document);
+		document.setUserProfile(this);
+	}
+	
+	public void removeDocument(Document document) {
+		documents.remove(document);
+		document.setUserProfile(null);
+	}
 }

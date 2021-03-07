@@ -1,11 +1,16 @@
 package com.employmee.employmee.service;
 
+import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.employmee.employmee.entity.Document;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.User;
 import com.employmee.employmee.entity.UserProfile;
@@ -56,4 +61,28 @@ public class UserServiceImpl implements UserService {
 		userProfileRepository.save(userProfile);
 	}
 
+	@Override
+	public void addDocument(UserProfile userProfile, Path path, MultipartFile file, String type, String name) {
+		Document document = new Document();
+		
+		String documentName = FilenameUtils.getBaseName(file.getOriginalFilename());
+		if(name != null) {
+			name = name.trim();
+			if(!name.isEmpty()) {			
+				documentName = name;
+			}
+		}
+		
+		document.setPath(path.toString());
+		document.setName(documentName);
+		document.setType(Document.TYPE.valueOf(type));
+		document.setSize(file.getSize());
+		document.setDateUploaded(LocalDate.now());
+		
+		userProfile.addDocument(document);
+		
+		userProfileRepository.save(userProfile);
+	}
+
+	
 }
