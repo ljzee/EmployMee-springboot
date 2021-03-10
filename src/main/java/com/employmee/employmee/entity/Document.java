@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.io.FilenameUtils;
+
 @Entity
 @Table(name = "documents")
 public class Document {
@@ -102,6 +104,10 @@ public class Document {
 		this.userProfile = userProfile;
 	}
 
+	public String getFileName() {
+		return this.getName() + "." + FilenameUtils.getExtension(this.getPath());
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

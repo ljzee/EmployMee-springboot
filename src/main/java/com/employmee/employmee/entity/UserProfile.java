@@ -159,6 +159,18 @@ public class UserProfile {
 		return false;
 	}
 	
+	public Set<Document> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(Set<Document> documents) {
+		this.documents = documents;
+	}
+
+	public boolean hasDocument(Document document) {
+		return this.documents.contains(document);
+	}
+	
 	public void addDocument(Document document) {
 		documents.add(document);
 		document.setUserProfile(this);
