@@ -1,6 +1,7 @@
 package com.employmee.employmee.entity;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -66,6 +67,13 @@ public class UserProfile {
 		orphanRemoval = true
 	)
 	Set<Document> documents = new HashSet<>();
+	
+	@OneToMany(
+		mappedBy = "userProfile",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
+	Set<Application> applications = new HashSet<>();
 	
 	public UserProfile() {}
 
@@ -153,10 +161,6 @@ public class UserProfile {
 		return this.bookmarkedJobPosts.contains(jobPost);
 	}
 	
-	public boolean hasAppliedToJobPost(JobPost jobPost) {
-		return false;
-	}
-	
 	public Set<Document> getDocuments() {
 		return documents;
 	}
@@ -177,5 +181,39 @@ public class UserProfile {
 	public void removeDocument(Document document) {
 		documents.remove(document);
 		document.setUserProfile(null);
+	}
+
+	public Set<Application> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(Set<Application> applications) {
+		this.applications = applications;
+	}
+	
+	public void addApplication(Application application) {
+		this.applications.add(application);
+		application.setUserProfile(this);
+	}
+
+	public void removeApplication(Application application) {
+		this.applications.remove(application);
+		application.setUserProfile(null);
+	}
+	
+	private Set<JobPost> getAppliedToJobPosts() {
+		Iterator<Application> applicationIterator = this.applications.iterator();
+		Set<JobPost> appliedToJobPosts = new HashSet<>();
+		while(applicationIterator.hasNext()) {
+			Application application = applicationIterator.next();
+			appliedToJobPosts.add(application.jobPost);
+		}
+		
+		return appliedToJobPosts;
+	}
+	
+	public boolean hasAppliedToJobPost(JobPost jobPost) {
+		Set<JobPost> appliedToJobPosts = this.getAppliedToJobPosts();
+		return appliedToJobPosts.contains(jobPost);
 	}
 }

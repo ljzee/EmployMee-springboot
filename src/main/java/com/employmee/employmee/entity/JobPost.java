@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -95,6 +97,13 @@ public class JobPost {
            joinColumns=@JoinColumn(name="job_post_id"),
            inverseJoinColumns=@JoinColumn(name="address_id"))
 	Set<Address> addresses = new HashSet<>();
+    
+	@OneToMany(
+            mappedBy = "jobPost",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+        )
+	Set<Application> applications = new HashSet<>();
 	
 	public JobPost() {}
 
@@ -228,6 +237,28 @@ public class JobPost {
 
 	public boolean canDeleteJobPost() {
 		return this.status == STATUS.DRAFT;
+	}
+	
+	public Set<Application> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(Set<Application> applications) {
+		this.applications = applications;
+	}
+	
+	public void addApplication(Application application) {
+		this.applications.add(application);
+		application.setJobPost(this);
+	}
+
+	public void removeApplication(Application application) {
+		this.applications.remove(application);
+		application.setJobPost(null);
+	}
+	
+	public boolean isAcceptingApplications() {
+		return this.status == STATUS.OPEN;
 	}
 	
 	@Override

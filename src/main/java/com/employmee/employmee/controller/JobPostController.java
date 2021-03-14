@@ -36,7 +36,7 @@ public class JobPostController {
 			                               @RequestParam(defaultValue = "") String state,
 			                               @RequestParam(defaultValue = "") String city) {
 		
-		UserProfile userProfile = this.getCurrentBusinessProfile();
+		UserProfile userProfile = this.getCurrentUserProfile();
 		List<UserJobPost> userJobPosts = jobPostService.searchJobPosts(userProfile, searchField, country, state, city);
 		
 		return ResponseEntity.ok(userJobPosts);
@@ -45,7 +45,7 @@ public class JobPostController {
 	@GetMapping("/{jobPostId}")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getJobPost(@PathVariable int jobPostId) {
-		UserProfile userProfile = this.getCurrentBusinessProfile();
+		UserProfile userProfile = this.getCurrentUserProfile();
 		
 		UserJobPost userJobPost = jobPostService.getJobPostById(userProfile, jobPostId);
 		if(userJobPost == null) {
@@ -55,7 +55,7 @@ public class JobPostController {
 		return ResponseEntity.ok(userJobPost);
 	}
 	
-	private UserProfile getCurrentBusinessProfile() {
+	private UserProfile getCurrentUserProfile() {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	
 		
