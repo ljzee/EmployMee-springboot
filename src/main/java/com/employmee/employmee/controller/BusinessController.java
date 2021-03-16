@@ -32,6 +32,7 @@ import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
+import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
 import com.employmee.employmee.repository.BusinessProfileRepository;
@@ -188,6 +189,24 @@ public class BusinessController {
 		
 		jobPostService.updateJobPostStatus(jobPostOptional.get(), updateJobPostStatusRequest);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/jobpost/{jobPostId}/applicants")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> getJobPostApplicants(@PathVariable int jobPostId) {
+		Optional<JobPost> jobPostOptional = jobPostRepository.findById(jobPostId);
+		if(jobPostOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		JobPost jobPost = jobPostOptional.get();
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		if(!businessProfile.hasJobPost(jobPost)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		List<Applicant> applicants = jobPostService.getApplicantsForJobPost(jobPost);
+		return ResponseEntity.ok(applicants);
 	}
 	
 	@GetMapping("/address")

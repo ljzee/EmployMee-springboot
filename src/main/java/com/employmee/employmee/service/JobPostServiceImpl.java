@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.employmee.employmee.entity.Address;
+import com.employmee.employmee.entity.Application;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
@@ -21,6 +23,7 @@ import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
+import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.UserJobPost;
 import com.employmee.employmee.repository.AddressRepository;
 import com.employmee.employmee.repository.BusinessProfileRepository;
@@ -133,6 +136,16 @@ public class JobPostServiceImpl implements JobPostService {
 		userJobPost.setBookmarked(userProfile.hasBookmarkedJobPost(jobPost));
 		
 		return userJobPost;
+	}
+
+	@Override
+	public List<Applicant> getApplicantsForJobPost(JobPost jobPost) {
+		
+		List<Applicant> applicants = jobPost.getApplications().stream()
+				                                              .map(application -> new Applicant(application))
+				                                              .collect(Collectors.toList());
+
+		return applicants;
 	}
 
 }

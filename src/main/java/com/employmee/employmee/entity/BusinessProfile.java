@@ -134,6 +134,10 @@ public class BusinessProfile {
 		jobPost.setBusinessProfile(null);
 	}
 
+	public boolean hasJobPost(JobPost jobPost) {
+		return this.jobPosts.contains(jobPost);
+	}
+	
 	public Set<Address> getAddresses() {
 		return addresses;
 	}

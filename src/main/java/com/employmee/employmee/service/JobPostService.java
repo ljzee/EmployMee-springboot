@@ -10,6 +10,7 @@ import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
+import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.UserJobPost;
 
 public interface JobPostService {
@@ -24,4 +25,6 @@ public interface JobPostService {
 	public List<UserJobPost> searchJobPosts(UserProfile userProfile, String searchField, String country, String state, String city);
 	
 	public UserJobPost getJobPostById(UserProfile userProfile, int jobPostId);
+	
+	public List<Applicant> getApplicantsForJobPost(JobPost jobPost);
 }

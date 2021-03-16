@@ -47,8 +47,8 @@ public class UserProfile {
 	@Column(name = "bio")
 	private String bio;
 	
-	@Column(name = "profile_image_name")
-	private String profileImageName;
+	@Column(name = "profile_image")
+	private String profileImage;
 	
 	@ManyToMany(cascade = {
 	        CascadeType.PERSIST,
@@ -141,12 +141,12 @@ public class UserProfile {
 		this.bio = bio;
 	}
 
-	public String getProfileImageName() {
-		return profileImageName;
+	public String getProfileImage() {
+		return profileImage;
 	}
 
-	public void setProfileImageName(String profileImageName) {
-		this.profileImageName = profileImageName;
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 
 	public Set<JobPost> getBookmarkedJobPosts() {
