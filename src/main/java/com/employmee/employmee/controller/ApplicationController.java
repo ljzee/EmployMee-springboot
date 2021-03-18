@@ -1,28 +1,33 @@
 package com.employmee.employmee.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.employmee.employmee.entity.Application;
+import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.Document;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.SubmitApplicationRequest;
+import com.employmee.employmee.payload.request.UpdateApplicationStatusRequest;
+import com.employmee.employmee.repository.ApplicationRepository;
+import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.DocumentRepository;
 import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.repository.UserProfileRepository;
@@ -40,10 +45,16 @@ public class ApplicationController {
 	UserProfileRepository userProfileRepository;
 	
 	@Autowired
+	BusinessProfileRepository businessProfileRepository;
+	
+	@Autowired
 	JobPostRepository jobPostRepository;
 	
 	@Autowired
 	DocumentRepository documentRepository;
+	
+	@Autowired
+	ApplicationRepository applicationRepository;
 	
 	@PostMapping("")
 	public ResponseEntity<?> submitApplication(@Valid @RequestBody SubmitApplicationRequest submitApplicationRequest) {
@@ -117,10 +128,36 @@ public class ApplicationController {
 		}
 	}
 	
+	@PutMapping("/{applicationId}")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> updateApplicationStatus(@PathVariable int applicationId, @Valid @RequestBody UpdateApplicationStatusRequest updateApplicationStatusRequest) {
+		Optional<Application> applicationOptional = applicationRepository.findById(applicationId);
+		if(applicationOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		
+		Application application = applicationOptional.get();
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		if(!businessProfile.hasJobPost(application.getJobPost())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		applicationService.updateApplicationStatus(application, updateApplicationStatusRequest);
+		
+		return ResponseEntity.ok().build();
+	}
+	
 	private UserProfile getCurrentUserProfile() {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		Optional<UserProfile> result = userProfileRepository.findById(userDetails.getId());
+		return result.get();
+	}
+	
+	private BusinessProfile getCurrentBusinessProfile() {
+		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		Optional<BusinessProfile> result = businessProfileRepository.findById(userDetails.getId());
 		return result.get();
 	}
 }

@@ -1,11 +1,8 @@
 package com.employmee.employmee.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -26,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
-import com.employmee.employmee.exception.EntityNotFoundException;
-import com.employmee.employmee.exception.UserFriendlyException;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
@@ -35,9 +30,11 @@ import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
 import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
+import com.employmee.employmee.repository.ApplicationRepository;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.security.MyUserDetails;
+import com.employmee.employmee.service.ApplicationService;
 import com.employmee.employmee.service.BusinessService;
 import com.employmee.employmee.service.JobPostService;
 
@@ -52,10 +49,16 @@ public class BusinessController {
 	JobPostService jobPostService;
 	
 	@Autowired
+	ApplicationService applicationService;
+	
+	@Autowired
 	BusinessProfileRepository businessProfileRepository;
 	
 	@Autowired
 	JobPostRepository jobPostRepository;
+	
+	@Autowired
+	ApplicationRepository applicationRepository;
 	
 	@PostMapping("/profile")
 	@PreAuthorize("hasRole('BUSINESS')")

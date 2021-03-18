@@ -11,6 +11,7 @@ import com.employmee.employmee.entity.Application;
 import com.employmee.employmee.entity.Document;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
+import com.employmee.employmee.payload.request.UpdateApplicationStatusRequest;
 import com.employmee.employmee.repository.ApplicationRepository;
 
 @Service
@@ -28,6 +29,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setDocuments(new HashSet<Document>(documents));
 		application.setUserProfile(userProfile);
 		application.setJobPost(jobPost);
+		
+		applicationRepository.save(application);
+	}
+
+	@Override
+	public void updateApplicationStatus(Application application,
+			UpdateApplicationStatusRequest updateApplicationStatusRequest) {
+
+		application.setStatus(Application.STATUS.valueOf(updateApplicationStatusRequest.getStatus()));
+		application.setDateProcessed(LocalDate.now());
 		
 		applicationRepository.save(application);
 	}
