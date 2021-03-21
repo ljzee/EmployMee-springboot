@@ -1,22 +1,33 @@
 package com.employmee.employmee.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.validation.Valid;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.employmee.employmee.entity.Application;
 import com.employmee.employmee.entity.BusinessProfile;
@@ -33,6 +44,7 @@ import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.security.MyUserDetails;
 import com.employmee.employmee.service.ApplicationService;
+import com.employmee.employmee.service.StorageService;
 
 @RestController
 @RequestMapping("/application")
@@ -40,6 +52,9 @@ public class ApplicationController {
 	
 	@Autowired
 	ApplicationService applicationService;
+	
+	@Autowired
+	StorageService storageService;
 	
 	@Autowired
 	UserProfileRepository userProfileRepository;
@@ -145,6 +160,53 @@ public class ApplicationController {
 		applicationService.updateApplicationStatus(application, updateApplicationStatusRequest);
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/{applicationId}")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<StreamingResponseBody> serveApplicationDocumentsAsZip(@PathVariable int applicationId) {
+		Optional<Application> applicationOptional = applicationRepository.findById(applicationId);
+		if(applicationOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		
+		Application application = applicationOptional.get();
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		if(!businessProfile.hasJobPost(application.getJobPost())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		Set<Document> documents = application.getDocuments();
+		String zipName = this.getZipName(application);
+		return ResponseEntity.ok()
+				             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + zipName + "\"")
+				             .body(out -> {
+				                 var zipOutputStream = new ZipOutputStream(out);
+				                 for(Document document : documents) {
+				                	 Resource resource = storageService.loadAsResource(FilenameUtils.getName(document.getPath()));
+				                	 File file = resource.getFile();
+				                	 
+				                	 zipOutputStream.putNextEntry(new ZipEntry(document.getFileName()));
+				                	 FileInputStream fileInputStream = new FileInputStream(file);
+				                	 
+				                     IOUtils.copy(fileInputStream, zipOutputStream);
+
+				                     fileInputStream.close();
+				                     zipOutputStream.closeEntry();
+				                 }
+				                 zipOutputStream.close();
+				             });
+	}
+	
+	// Example zip name: software-developer-newuser-package.zip
+	private String getZipName(Application application) {
+		String template = "%s-%s%s-package.zip";
+		
+		String jobTitleProcessed = application.getJobPost().getTitle().toLowerCase().replaceAll("[^A-Za-z0-9]+", "-");
+		String firstNameProcessed = application.getUserProfile().getFirstName().toLowerCase().replaceAll("[^A-Za-z0-9]+", "-");
+		String lastNameProcessed = application.getUserProfile().getLastName().toLowerCase().replaceAll("[^A-Za-z0-9]+", "-");
+		
+		return String.format(template, jobTitleProcessed, firstNameProcessed, lastNameProcessed);
 	}
 	
 	private UserProfile getCurrentUserProfile() {

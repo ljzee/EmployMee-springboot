@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.employmee.employmee.annotation.ValueOfEnum;
 import com.employmee.employmee.entity.Document;
-import com.employmee.employmee.entity.User;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.UpdateDocumentRequest;
 import com.employmee.employmee.payload.response.UserDocument;
@@ -93,22 +92,18 @@ public class DocumentController {
 	}
 	
 	@GetMapping("/{documentId}")
-	@PreAuthorize("hasAnyRole('USER', 'BUSINESS')")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> serveDocument(@PathVariable int documentId) {
-		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
 		Optional<Document> documentOptional = documentRepository.findById(documentId);
 		if(documentOptional.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 		Document document = documentOptional.get();
 		
-		if(userDetails.getRole() == User.ROLE.USER.name()) {
-			// check that document belongs to the user requesting the document
-			UserProfile userProfile = this.getCurrentUserProfile();
-			if(!userProfile.hasDocument(document)) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-			}
+		// check that document belongs to the user requesting the document
+		UserProfile userProfile = this.getCurrentUserProfile();
+		if(!userProfile.hasDocument(document)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 		
 		Resource file = storageService.loadAsResource(FilenameUtils.getName(document.getPath()));
