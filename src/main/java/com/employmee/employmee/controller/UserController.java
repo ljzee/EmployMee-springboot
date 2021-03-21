@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
+import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.BookmarkJobPostRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
@@ -98,6 +99,15 @@ public class UserController {
 		}
 		
 		userService.toggleBookmarkJobPost(userProfile, jobPostOptional.get());
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/experience")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> addExperience(@Valid @RequestBody AddExperienceRequest addExperienceRequest) {
+		UserProfile userProfile = this.getCurrentUserProfile();
+		
+		userService.addExperience(userProfile, addExperienceRequest);
 		return ResponseEntity.ok().build();
 	}
 	

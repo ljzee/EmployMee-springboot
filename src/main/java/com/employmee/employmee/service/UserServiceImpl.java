@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.employmee.employmee.entity.Document;
+import com.employmee.employmee.entity.Experience;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.User;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserNotFoundException;
 import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
+import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.repository.UserProfileRepository;
@@ -90,6 +92,15 @@ public class UserServiceImpl implements UserService {
 		document.setDateUploaded(LocalDate.now());
 		
 		userProfile.addDocument(document);
+		
+		userProfileRepository.save(userProfile);
+	}
+
+	@Override
+	public void addExperience(UserProfile userProfile, AddExperienceRequest addExperienceRequest) {
+		Experience experience = new Experience(addExperienceRequest);
+		
+		userProfile.addExperience(experience);
 		
 		userProfileRepository.save(userProfile);
 	}

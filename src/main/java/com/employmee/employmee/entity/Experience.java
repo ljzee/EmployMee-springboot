@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -53,6 +54,15 @@ public class Experience {
 	
 	public Experience() {}
 	
+	public Experience(AddExperienceRequest addExperienceRequest) {
+		this.companyName = addExperienceRequest.getCompanyName();
+		this.title = addExperienceRequest.getTitle();
+		this.location = addExperienceRequest.getLocation();
+		this.description = addExperienceRequest.getDescription();
+		this.startDate = addExperienceRequest.getStartDate();
+		this.endDate = addExperienceRequest.getEndDate();
+	}
+
 	public int getId() {
 		return id;
 	}
