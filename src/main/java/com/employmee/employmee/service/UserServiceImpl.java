@@ -2,7 +2,6 @@ package com.employmee.employmee.service;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
@@ -17,6 +16,7 @@ import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.exception.UserNotFoundException;
 import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
+import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.repository.UserRepository;
 
@@ -49,6 +49,16 @@ public class UserServiceImpl implements UserService {
 		userProfileRepository.save(newUserProfile);
 	}
 
+	@Override
+	public void updateProfile(UserProfile userProfile, UpdateUserProfileRequest updateUserProfileRequest) {
+		userProfile.setBio(updateUserProfileRequest.getBio());
+		userProfile.setPersonalWebsite(updateUserProfileRequest.getPersonalWebsite());
+		userProfile.setPhoneNumber(updateUserProfileRequest.getPhoneNumber());
+		userProfile.setGithubLink(updateUserProfileRequest.getGithubLink());
+		
+		userProfileRepository.save(userProfile);
+	}
+	
 	@Override
 	public void toggleBookmarkJobPost(UserProfile userProfile, JobPost jobPost) {
 		Set<JobPost> bookmarkedJobPosts = userProfile.getBookmarkedJobPosts();

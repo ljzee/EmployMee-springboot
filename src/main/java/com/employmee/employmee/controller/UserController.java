@@ -1,7 +1,6 @@
 package com.employmee.employmee.controller;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -12,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,9 @@ import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.BookmarkJobPostRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
+import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.payload.response.UserDashboardResponse;
+import com.employmee.employmee.payload.response.UserProfileResponse;
 import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.security.MyUserDetails;
@@ -46,6 +49,29 @@ public class UserController {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		userService.createProfile(userDetails.getId(), createUserProfileRequest);
+		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/profile/{userProfileId}")
+	@PreAuthorize("hasAnyRole('USER', 'BUSINESS')")
+	public ResponseEntity<?> getProfile(@PathVariable int userProfileId) {
+		Optional<UserProfile> userProfileOptional = userProfileRepository.findById(userProfileId);
+		if(userProfileOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		UserProfileResponse userProfileResponse = new UserProfileResponse(userProfileOptional.get());
+		
+		return ResponseEntity.ok().body(userProfileResponse);
+	}
+	
+	@PutMapping("/profile")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateUserProfileRequest updateUserProfileRequest) {
+		UserProfile userProfile = this.getCurrentUserProfile();
+		
+		userService.updateProfile(userProfile, updateUserProfileRequest);
+		
 		return ResponseEntity.ok().build();
 	}
 	

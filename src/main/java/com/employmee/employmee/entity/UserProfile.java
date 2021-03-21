@@ -75,6 +75,13 @@ public class UserProfile {
 	)
 	Set<Application> applications = new HashSet<>();
 	
+	@OneToMany(
+		mappedBy = "userProfile",
+		cascade = CascadeType.ALL,
+		orphanRemoval = true
+	)
+	Set<Experience> experiences = new HashSet<>();
+	
 	public UserProfile() {}
 
 	public int getId() {
@@ -215,5 +222,23 @@ public class UserProfile {
 	public boolean hasAppliedToJobPost(JobPost jobPost) {
 		Set<JobPost> appliedToJobPosts = this.getAppliedToJobPosts();
 		return appliedToJobPosts.contains(jobPost);
+	}
+
+	public Set<Experience> getExperiences() {
+		return experiences;
+	}
+
+	public void setExperiences(Set<Experience> experiences) {
+		this.experiences = experiences;
+	}
+	
+	public void addExperience(Experience experience) {
+		this.experiences.add(experience);
+		experience.setUserProfile(this);
+	}
+	
+	public void removeExperience(Experience experience) {
+		this.experiences.remove(experience);
+		experience.setUserProfile(null);
 	}
 }

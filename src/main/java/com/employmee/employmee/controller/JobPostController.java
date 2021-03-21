@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.response.UserJobPost;
-import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.security.MyUserDetails;
 import com.employmee.employmee.service.JobPostService;
