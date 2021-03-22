@@ -241,4 +241,8 @@ public class UserProfile {
 		this.experiences.remove(experience);
 		experience.setUserProfile(null);
 	}
+	
+	public boolean hasExperience(Experience experience) {
+		return this.experiences.contains(experience);
+	}
 }

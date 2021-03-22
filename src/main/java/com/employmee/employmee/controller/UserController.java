@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.employmee.employmee.entity.Experience;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.AddExperienceRequest;
@@ -26,9 +27,11 @@ import com.employmee.employmee.payload.request.CreateUserProfileRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.payload.response.UserDashboardResponse;
 import com.employmee.employmee.payload.response.UserProfileResponse;
+import com.employmee.employmee.repository.ExperienceRepository;
 import com.employmee.employmee.repository.JobPostRepository;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.security.MyUserDetails;
+import com.employmee.employmee.service.ExperienceService;
 import com.employmee.employmee.service.UserService;
 
 @RestController
@@ -39,10 +42,16 @@ public class UserController {
 	UserService userService;
 
 	@Autowired
+	ExperienceService experienceService;
+	
+	@Autowired
 	UserProfileRepository userProfileRepository;
 	
 	@Autowired
 	JobPostRepository jobPostRepository;
+	
+	@Autowired
+	ExperienceRepository experienceRepository;
 	
 	@PostMapping("/profile")
 	@PreAuthorize("hasRole('USER')")
@@ -108,6 +117,26 @@ public class UserController {
 		UserProfile userProfile = this.getCurrentUserProfile();
 		
 		userService.addExperience(userProfile, addExperienceRequest);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/experience/{experienceId}")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> updateExperience(@PathVariable int experienceId, @Valid @RequestBody AddExperienceRequest addExperienceRequest) {
+		UserProfile userProfile = this.getCurrentUserProfile();
+		
+		Optional<Experience> experienceOptional = experienceRepository.findById(experienceId);
+		if(experienceOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		Experience experience = experienceOptional.get();
+		if(!userProfile.hasExperience(experience)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		experienceService.updateExperience(experience, addExperienceRequest);
+		
 		return ResponseEntity.ok().build();
 	}
 	
