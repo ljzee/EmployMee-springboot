@@ -12,6 +12,7 @@ import com.employmee.employmee.entity.User;
 import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
 import com.employmee.employmee.exception.UserNotFoundException;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
+import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.UserRepository;
 
@@ -51,6 +52,16 @@ public class BusinessServiceImpl implements BusinessService {
 		newBusinessProfile.setAddresses(addresses);
 		
 		businessProfileRepository.save(newBusinessProfile);
+	}
+
+	@Override
+	public void updateProfile(BusinessProfile businessProfile,
+			UpdateBusinessProfileRequest updateBusinessProfileRequest) {
+		businessProfile.setDescription(updateBusinessProfileRequest.getDescription());
+		businessProfile.setWebsite(updateBusinessProfileRequest.getWebsite());
+		businessProfile.setPhoneNumber(updateBusinessProfileRequest.getPhoneNumber());
+		
+		businessProfileRepository.save(businessProfile);
 	}
 
 }

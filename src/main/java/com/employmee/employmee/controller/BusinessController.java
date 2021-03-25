@@ -23,16 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
+import com.employmee.employmee.entity.Update;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
+import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
 import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
+import com.employmee.employmee.payload.response.BusinessProfileResponse;
 import com.employmee.employmee.repository.ApplicationRepository;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.JobPostRepository;
+import com.employmee.employmee.repository.UpdateRepository;
 import com.employmee.employmee.security.MyUserDetails;
 import com.employmee.employmee.service.ApplicationService;
 import com.employmee.employmee.service.BusinessService;
@@ -60,12 +64,42 @@ public class BusinessController {
 	@Autowired
 	ApplicationRepository applicationRepository;
 	
+	@Autowired
+	UpdateRepository updateRepository;
+	
 	@PostMapping("/profile")
 	@PreAuthorize("hasRole('BUSINESS')")
 	public ResponseEntity<?> createProfile(@Valid @RequestBody CreateBusinessProfileRequest createBusinessProfileRequest) {
 		MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		businessService.createProfile(userDetails.getId(), createBusinessProfileRequest);
+		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/profile/{businessProfileId}")
+	@PreAuthorize("hasAnyRole('USER', 'BUSINESS')")
+	public ResponseEntity<?> getProfile(@PathVariable int businessProfileId) {
+		Optional<BusinessProfile> businessProfileOptional = businessProfileRepository.findById(businessProfileId);
+		
+		if(businessProfileOptional.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		BusinessProfile businessProfile = businessProfileOptional.get();
+		List<Update> updates = updateRepository.getUpdatesByBusinessProfileId(businessProfileId);
+
+		BusinessProfileResponse businessProfileResponse = new BusinessProfileResponse(businessProfile, updates);
+		
+		return ResponseEntity.ok(businessProfileResponse);
+	}
+	
+	@PutMapping("/profile")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest) {
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		
+		businessService.updateProfile(businessProfile, updateBusinessProfileRequest);
+	
 		return ResponseEntity.ok().build();
 	}
 	
