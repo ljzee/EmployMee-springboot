@@ -1,7 +1,10 @@
 package com.employmee.employmee.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.employmee.employmee.entity.Application;
 import com.employmee.employmee.entity.Experience;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
@@ -25,6 +29,7 @@ import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.BookmarkJobPostRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
+import com.employmee.employmee.payload.response.UserApplication;
 import com.employmee.employmee.payload.response.UserDashboardResponse;
 import com.employmee.employmee.payload.response.UserProfileResponse;
 import com.employmee.employmee.repository.ExperienceRepository;
@@ -138,6 +143,17 @@ public class UserController {
 		experienceService.updateExperience(experience, addExperienceRequest);
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/application")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> getAllApplications() {
+		UserProfile userProfile = this.getCurrentUserProfile();
+		Set<Application> applications = userProfile.getApplications();
+		List<UserApplication> userApplications = applications.stream().map(application -> new UserApplication(application))
+				                                                      .collect(Collectors.toList());
+		return ResponseEntity.ok(userApplications);
+				        						                      
 	}
 	
 	private UserProfile getCurrentUserProfile() {
