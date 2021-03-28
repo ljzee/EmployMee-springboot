@@ -1,5 +1,6 @@
 package com.employmee.employmee.service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,12 +9,15 @@ import org.springframework.stereotype.Service;
 
 import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
+import com.employmee.employmee.entity.Update;
 import com.employmee.employmee.entity.User;
 import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
 import com.employmee.employmee.exception.UserNotFoundException;
+import com.employmee.employmee.payload.request.AddUpdateRequest;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
 import com.employmee.employmee.repository.BusinessProfileRepository;
+import com.employmee.employmee.repository.UpdateRepository;
 import com.employmee.employmee.repository.UserRepository;
 
 @Service
@@ -24,6 +28,9 @@ public class BusinessServiceImpl implements BusinessService {
 	
 	@Autowired
 	UserRepository userRepostiory;
+	
+	@Autowired
+	UpdateRepository updateRepository;
 	
 	@Override
 	public void createProfile(int userId, CreateBusinessProfileRequest createBusinessProfileRequest) {
@@ -62,6 +69,16 @@ public class BusinessServiceImpl implements BusinessService {
 		businessProfile.setPhoneNumber(updateBusinessProfileRequest.getPhoneNumber());
 		
 		businessProfileRepository.save(businessProfile);
+	}
+
+	@Override
+	public void addUpdate(BusinessProfile businessProfile, AddUpdateRequest addUpdateRequest) {
+		Update update = new Update();
+		update.setContent(addUpdateRequest.getContent());
+		update.setBusinessProfile(businessProfile);
+		update.setDatePosted(LocalDateTime.now());
+		
+		updateRepository.save(update);
 	}
 
 }

@@ -11,6 +11,7 @@ public interface UpdateRepository extends JpaRepository<Update, Integer> {
 	
 	@Query("SELECT businessUpdate \n"
 		 + "FROM Update businessUpdate \n"
-		 + "WHERE businessUpdate.businessProfile.user.id = :businessProfileId")
+		 + "WHERE businessUpdate.businessProfile.user.id = :businessProfileId \n"
+		 + "ORDER BY businessUpdate.datePosted DESC")
 	public List<Update> getUpdatesByBusinessProfileId(int businessProfileId);
 }

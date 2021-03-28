@@ -24,6 +24,7 @@ import com.employmee.employmee.entity.Address;
 import com.employmee.employmee.entity.BusinessProfile;
 import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.Update;
+import com.employmee.employmee.payload.request.AddUpdateRequest;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
@@ -255,6 +256,31 @@ public class BusinessController {
 		addresses.addAll(businessProfile.getAddresses());
 		
 		return ResponseEntity.ok(addresses);
+	}
+	
+	@PostMapping("/update")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> addUpdate(@Valid @RequestBody AddUpdateRequest addUpdateRequest) {
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		
+		businessService.addUpdate(businessProfile, addUpdateRequest);
+		
+		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/update/{updateId}")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> deleteUpdate(@PathVariable int updateId) {
+		Optional<Update> updateOptional = updateRepository.findById(updateId);
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		if(updateOptional.isEmpty() ||
+		   (updateOptional.get().getBusinessProfile().getId() != businessProfile.getId())) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		updateRepository.delete(updateOptional.get());
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	private BusinessProfile getCurrentBusinessProfile() {

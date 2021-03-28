@@ -1,6 +1,6 @@
 package com.employmee.employmee.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ public class Update {
 	private String content;
 
 	@Column(name = "date_posted")
-	private LocalDate datePosted;
+	private LocalDateTime datePosted;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "business_profile_id")
@@ -50,11 +50,11 @@ public class Update {
 		this.content = content;
 	}
 
-	public LocalDate getDatePosted() {
+	public LocalDateTime getDatePosted() {
 		return datePosted;
 	}
 
-	public void setDatePosted(LocalDate datePosted) {
+	public void setDatePosted(LocalDateTime datePosted) {
 		this.datePosted = datePosted;
 	}
 
