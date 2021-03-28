@@ -1,7 +1,10 @@
 package com.employmee.employmee.payload.response;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import com.employmee.employmee.comparator.SortExperienceByEndDateDesc;
 import com.employmee.employmee.entity.Experience;
 import com.employmee.employmee.entity.UserProfile;
 
@@ -23,7 +26,7 @@ public class UserProfileResponse {
 	
 	private String profileImage;
 	
-	private Set<Experience> experiences;
+	private List<Experience> experiences;
 
 	public UserProfileResponse(UserProfile userProfile) {
 		this.firstName = userProfile.getFirstName();
@@ -34,7 +37,9 @@ public class UserProfileResponse {
 		this.personalWebsite = userProfile.getPersonalWebsite();
 		this.githubLink = userProfile.getGithubLink();
 		this.profileImage = userProfile.getProfileImage();
-		this.experiences = userProfile.getExperiences();
+		List<Experience> experiencesSorted = new ArrayList<>(userProfile.getExperiences());
+		Collections.sort(experiencesSorted, new SortExperienceByEndDateDesc());
+		this.experiences = experiencesSorted;
 	}
 		
 	public String getFirstName() {
@@ -93,11 +98,11 @@ public class UserProfileResponse {
 		this.githubLink = githubLink;
 	}
 
-	public Set<Experience> getExperiences() {
+	public List<Experience> getExperiences() {
 		return experiences;
 	}
 
-	public void setExperiences(Set<Experience> experiences) {
+	public void setExperiences(List<Experience> experiences) {
 		this.experiences = experiences;
 	}
 
