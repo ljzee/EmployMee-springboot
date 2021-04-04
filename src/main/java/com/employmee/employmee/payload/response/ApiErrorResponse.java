@@ -19,6 +19,11 @@ public class ApiErrorResponse {
 		this.status = status;
 	}
 	
+	public ApiErrorResponse(HttpStatus status, String message) {
+		this.status = status;
+		this.message = message;
+	}
+	
 	public HttpStatus getStatus() {
 		return status;
 	}

@@ -12,11 +12,11 @@ public class SubmitApplicationRequest {
 
 	public SubmitApplicationRequest() {}
 	
-	public int getJobPostId() {
+	public Integer getJobPostId() {
 		return jobPostId;
 	}
 
-	public void setJobPostId(int jobPostId) {
+	public void setJobPostId(Integer jobPostId) {
 		this.jobPostId = jobPostId;
 	}
 
