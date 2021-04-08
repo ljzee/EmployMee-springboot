@@ -16,6 +16,7 @@ import com.employmee.employmee.exception.UserNotFoundException;
 import com.employmee.employmee.payload.request.AddUpdateRequest;
 import com.employmee.employmee.payload.request.CreateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
+import com.employmee.employmee.payload.request.UpdateProfileImageRequest;
 import com.employmee.employmee.repository.BusinessProfileRepository;
 import com.employmee.employmee.repository.UpdateRepository;
 import com.employmee.employmee.repository.UserRepository;
@@ -79,6 +80,15 @@ public class BusinessServiceImpl implements BusinessService {
 		update.setDatePosted(LocalDateTime.now());
 		
 		updateRepository.save(update);
+	}
+
+	@Override
+	public void updateProfileImage(BusinessProfile businessProfile,
+			UpdateProfileImageRequest updateProfileImageRequest) {
+		
+		businessProfile.setProfileImage(updateProfileImageRequest.getEncodedString());
+		businessProfileRepository.save(businessProfile);
+		
 	}
 
 }

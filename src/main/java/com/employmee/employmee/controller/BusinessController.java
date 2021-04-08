@@ -30,6 +30,7 @@ import com.employmee.employmee.payload.request.CreateJobPostRequest;
 import com.employmee.employmee.payload.request.UpdateBusinessProfileRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostDeadlineRequest;
 import com.employmee.employmee.payload.request.UpdateJobPostStatusRequest;
+import com.employmee.employmee.payload.request.UpdateProfileImageRequest;
 import com.employmee.employmee.payload.response.Applicant;
 import com.employmee.employmee.payload.response.BusinessDashboardResponse;
 import com.employmee.employmee.payload.response.BusinessJobPost;
@@ -101,6 +102,16 @@ public class BusinessController {
 		
 		businessService.updateProfile(businessProfile, updateBusinessProfileRequest);
 	
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/profile-image")
+	@PreAuthorize("hasRole('BUSINESS')")
+	public ResponseEntity<?> updateProfileImage(@Valid @RequestBody UpdateProfileImageRequest updateProfileImageRequest) {
+		BusinessProfile businessProfile = this.getCurrentBusinessProfile();
+		
+		businessService.updateProfileImage(businessProfile, updateProfileImageRequest);
+		
 		return ResponseEntity.ok().build();
 	}
 	

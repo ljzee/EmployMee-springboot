@@ -18,6 +18,7 @@ import com.employmee.employmee.exception.UserNotFoundException;
 import com.employmee.employmee.exception.ProfileAlreadyCreatedException;
 import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
+import com.employmee.employmee.payload.request.UpdateProfileImageRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.repository.UserProfileRepository;
 import com.employmee.employmee.repository.UserRepository;
@@ -101,6 +102,13 @@ public class UserServiceImpl implements UserService {
 		Experience experience = new Experience(addExperienceRequest);
 		
 		userProfile.addExperience(experience);
+		
+		userProfileRepository.save(userProfile);
+	}
+
+	@Override
+	public void updateProfileImage(UserProfile userProfile, UpdateProfileImageRequest updateProfileImageRequest) {
+		userProfile.setProfileImage(updateProfileImageRequest.getEncodedString());
 		
 		userProfileRepository.save(userProfile);
 	}

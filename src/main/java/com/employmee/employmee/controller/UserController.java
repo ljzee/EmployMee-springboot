@@ -28,6 +28,7 @@ import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.BookmarkJobPostRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
+import com.employmee.employmee.payload.request.UpdateProfileImageRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 import com.employmee.employmee.payload.response.UserApplication;
 import com.employmee.employmee.payload.response.UserDashboardResponse;
@@ -78,6 +79,16 @@ public class UserController {
 		UserProfileResponse userProfileResponse = new UserProfileResponse(userProfileOptional.get());
 		
 		return ResponseEntity.ok().body(userProfileResponse);
+	}
+	
+	@PostMapping("/profile-image")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> updateProfileImage(@Valid @RequestBody UpdateProfileImageRequest updateProfileImageRequest) {
+		UserProfile userProfile = this.getCurrentUserProfile();
+		
+		userService.updateProfileImage(userProfile, updateProfileImageRequest);
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	@PutMapping("/profile")

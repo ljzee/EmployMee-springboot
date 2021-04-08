@@ -8,6 +8,7 @@ import com.employmee.employmee.entity.JobPost;
 import com.employmee.employmee.entity.UserProfile;
 import com.employmee.employmee.payload.request.AddExperienceRequest;
 import com.employmee.employmee.payload.request.CreateUserProfileRequest;
+import com.employmee.employmee.payload.request.UpdateProfileImageRequest;
 import com.employmee.employmee.payload.request.UpdateUserProfileRequest;
 
 public interface UserService {
@@ -20,4 +21,6 @@ public interface UserService {
 	public void addDocument(UserProfile userProfile, Path path, MultipartFile file, String type, String name);
 	
 	public void addExperience(UserProfile userProfile, AddExperienceRequest addExperienceRequest);
+	
+	public void updateProfileImage(UserProfile userProfile, UpdateProfileImageRequest updateProfileImageRequest);
 }
