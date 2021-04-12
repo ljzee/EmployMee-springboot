@@ -19,10 +19,10 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
 		 + "FROM JobPost jobPost \n"
 	     + "	JOIN jobPost.addresses address \n"
 	     + "	JOIN jobPost.businessProfile businessProfile \n"
-	     + "WHERE address.country LIKE %:country% \n"
-	     + "	AND address.state LIKE %:state% \n"
-	     + "	AND address.city  LIKE %:city% \n"
-	     + "	AND (jobPost.title LIKE %:searchField% OR businessProfile.companyName LIKE %:searchField%)"
+	     + "WHERE LOWER(address.country) LIKE LOWER('%' || :country || '%') \n"
+	     + "	AND LOWER(address.state) LIKE LOWER('%' || :state || '%') \n"
+	     + "	AND LOWER(address.city) LIKE LOWER('%' || :city || '%') \n"
+	     + "	AND (LOWER(jobPost.title) LIKE LOWER('%' || :searchField || '%') OR LOWER(businessProfile.companyName) LIKE LOWER('%' || :searchField || '%'))"
 	     + "	AND jobPost.status = 'OPEN'")
 	Set<JobPost> searchJobPost(@Param("searchField") String searchField, 
 			                          @Param("country") String country,
