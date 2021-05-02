@@ -20,6 +20,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	ApplicationRepository applicationRepository;
 	
+	@Autowired
+	EmailService emailService;
+	
 	@Override
 	public void createApplication(UserProfile userProfile, JobPost jobPost, List<Document> documents) {
 		Application application = new Application();
@@ -31,6 +34,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setJobPost(jobPost);
 		
 		applicationRepository.save(application);
+		
+		emailService.insertSendNewApplicationEmailRequest(application);
 	}
 
 	@Override
@@ -41,6 +46,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setDateProcessed(LocalDate.now());
 		
 		applicationRepository.save(application);
+		
+		emailService.insertSendApplicationStatusUpdatedEmailRequest(application);
 	}
 
 }
