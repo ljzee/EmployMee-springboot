@@ -1,0 +1,17 @@
+
+.radio-button {
+  display:inline-block;
+
+}
+
+.radio-button {
+    margin-right: 20px;
+}
+
+.radio-button:first-of-type {
+    margin-left: 0;
+}
+
+.radio-button:last-of-type {
+    margin-right: 0;
+}
