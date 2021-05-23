@@ -41,8 +41,6 @@ class LocationPicker extends React.Component{
   }
 
   handleChange(option, event){
-    const params = new URLSearchParams(this.props.location.search);
-
     if(event.name === "country"){
       this.props.setFieldValue("country", option.label);
       this.setState({
@@ -52,11 +50,6 @@ class LocationPicker extends React.Component{
         state: null,
         city: null
       });
-
-      params.set("country", option.label);
-      params.delete("state");
-      params.delete("city");
-      this.props.history.push({search: params.toString()});
     }
 
     if(event.name === "state"){
@@ -66,10 +59,6 @@ class LocationPicker extends React.Component{
         cityOptions: csc.getCitiesOfState(this.state.country.value, option.value).map(city=>({label: city.name, value: city.name})),
         city: null
       });
-
-      params.set("state", option.label);
-      params.delete("city");
-      this.props.history.push({search: params.toString()});
     }
 
     if(event.name === "city"){
@@ -77,9 +66,6 @@ class LocationPicker extends React.Component{
       this.setState({
         city: option
       });
-
-      params.set("city", option.label);
-      this.props.history.push({search: params.toString()});
     }
   }
 

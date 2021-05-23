@@ -27,13 +27,13 @@
   width: 32.5%;
 }
 
-.location-selector-container{
+.job-search-page .location-selector-container{
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.location-selector-container input{
+.job-search-page .location-selector-container input{
   margin-bottom: 0;
 }
 

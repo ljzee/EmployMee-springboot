@@ -82,21 +82,35 @@ class JobSearchPage extends React.Component{
   }
 
   setLocationFieldValue(selector, value){
+    const params = new URLSearchParams(this.props.location.search);
+
     if(selector === 'country'){
       this.setState({
         country: value,
         state: '',
         city: ''
-      })
+      });
+
+      params.set("country", value);
+      params.delete("state");
+      params.delete("city");
+      this.props.history.push({search: params.toString()});
     }else if(selector === 'state'){
       this.setState({
         state: value,
         city: ''
-      })
+      });
+
+      params.set("state", value);
+      params.delete("city");
+      this.props.history.push({search: params.toString()});
     }else{
       this.setState({
         city: value
-      })
+      });
+
+      params.set("city", value);
+      this.props.history.push({search: params.toString()});
     }
   }
 
