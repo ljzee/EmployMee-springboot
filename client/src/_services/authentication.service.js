@@ -15,6 +15,7 @@ export const authenticationService = {
     get currentUserValue () { return currentUserSubject.value },
     set newCurrentUserValue (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));
+      currentUserSubject.next(user);
     }
 };
 
