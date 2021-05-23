@@ -19,7 +19,6 @@ class Header extends React.Component {
 
     logout() {
         authenticationService.logout();
-        history.push('/login');
     }
 
     render() {

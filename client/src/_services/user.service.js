@@ -30,7 +30,6 @@ function createProfile(firstName, lastName, phoneNumber, personalWebsite, github
         let currentUser = authenticationService.currentUserValue;
         currentUser.hasProfile = true;
         authenticationService.newCurrentUserValue = currentUser;
-
       })
       .catch((error)=>{
         if(!error.response) {

@@ -72,6 +72,4 @@ class App extends React.Component {
     }
 }
 
-//<PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
-
 export { App };

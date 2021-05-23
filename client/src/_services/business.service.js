@@ -46,7 +46,6 @@ function createProfile(companyName, country, state, city, streetAddress, postalC
         let currentUser = authenticationService.currentUserValue;
         currentUser.hasProfile = true;
         authenticationService.newCurrentUserValue = currentUser;
-
       })
       .catch((error)=>{
         if(!error.response) {

@@ -15,7 +15,6 @@ class CreateProfilePage extends React.Component {
         this.state = {
           currentUser: authenticationService.currentUserValue
         }
-
     }
 
     render() {
@@ -171,61 +170,35 @@ class CreateProfilePage extends React.Component {
                                           </div>
                                           <LocationPicker setFieldValue={setFieldValue}>
                                           {({countryOptions, stateOptions, cityOptions, country, state, city, handleChange}) => (
-                                            <React.Fragment>
+                                            <div className="location-selector-container">
                                               <div className="form-group">
                                                 <label htmlFor="country">Country</label>
-                                                <Select
-                                                  onChange={handleChange}
-                                                  options={countryOptions}
-                                                  name="country"
-                                                  onBlur={()=>setFieldTouched("country", true)}
-                                                  value={country}
-                                                />
+                                                <Select name="country" options={countryOptions} value={country} onChange={handleChange} onBlur={()=>setFieldTouched("country", true)}/>
                                                 {errors.country && touched.country && (
-                                                  <div
-                                                    style={{ color: "#dc3545", marginTop: ".25rem", fontSize:"80%" }}
-                                                  >
+                                                  <div className="location-picker-invalid-feedback" >
                                                     {errors.country}
                                                   </div>
                                                 )}
                                               </div>
-
                                               <div className="form-group">
                                                 <label htmlFor="state">State</label>
-                                                <Select
-                                                  onChange={handleChange}
-                                                  options={stateOptions}
-                                                  name="state"
-                                                  onBlur={()=>setFieldTouched("state", true)}
-                                                  value={state}
-                                                />
+                                                <Select name="state" options={stateOptions} value={state} onChange={handleChange} onBlur={()=>setFieldTouched("state", true)}/>
                                                 {errors.state && touched.state && (
-                                                  <div
-                                                    style={{ color: "#dc3545", marginTop: ".25rem", fontSize:"80%" }}
-                                                  >
+                                                  <div className="location-picker-invalid-feedback" >
                                                     {errors.state}
                                                   </div>
                                                 )}
                                               </div>
-
                                               <div className="form-group">
                                                 <label htmlFor="city">City</label>
-                                                <Select
-                                                  onChange={handleChange}
-                                                  options={cityOptions}
-                                                  name="city"
-                                                  onBlur={()=>setFieldTouched("city", true)}
-                                                  value={city}
-                                                />
+                                                <Select name="city" options={cityOptions} value={city} onChange={handleChange} onBlur={()=>setFieldTouched("city", true)}/>
                                                 {errors.city && touched.city && (
-                                                  <div
-                                                    style={{ color: "#dc3545", marginTop: ".25rem", fontSize:"80%" }}
-                                                  >
+                                                  <div className="location-picker-invalid-feedback" >
                                                     {errors.city}
                                                   </div>
                                                 )}
                                               </div>
-                                            </React.Fragment>
+                                            </div>
                                           )}
                                           </LocationPicker>
                                           <div className="form-group">
