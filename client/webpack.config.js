@@ -41,7 +41,7 @@ module.exports = {
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: (process.env.NODE_ENV === 'production') ? 'https://boiling-sands-12792.herokuapp.com' : 'http://localhost:8080',
+            apiUrl: (process.env.NODE_ENV === 'production') ? 'http://Employmee-env.eba-sjrmdwmv.us-west-2.elasticbeanstalk.com' : 'http://localhost:8080',
         })
     }
 }
