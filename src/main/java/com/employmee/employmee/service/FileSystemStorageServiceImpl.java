@@ -32,6 +32,11 @@ public class FileSystemStorageServiceImpl implements StorageService {
 	@PostConstruct
 	private void initRootLocation() {
 		this.rootLocation = Paths.get(env.getProperty("upload.directory"));
+		try {
+			Files.createDirectories(this.rootLocation);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
